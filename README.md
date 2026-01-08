@@ -1,1 +1,1 @@
-Not Right now !
+Not ready yet.
