@@ -1,3 +1,4 @@
+"use client";
 import {
   ArrowLeft,
   Eye,
@@ -19,7 +20,7 @@ import axios from "axios";
 type propType = {
   previousStep: (n: number) => void;
 };
-const RegisterForm = ({ previousStep }: propType) => {
+const LoginPage = ({ previousStep }: propType) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -192,4 +193,4 @@ const RegisterForm = ({ previousStep }: propType) => {
   );
 };
 
-export default RegisterForm;
+export default LoginPage;
