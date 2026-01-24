@@ -16,6 +16,10 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import googleImg from "@/assets/google.png";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { signIn } from "next-auth/react";
+
 type propType = {
   previousStep: (n: number) => void;
 };
@@ -29,7 +33,10 @@ const RegisterForm = ({ previousStep }: propType) => {
     email?: string;
     password?: string;
   }>({});
-
+  const router = useRouter()
+  const notify = (e:any)=> toast(e);
+  
+  
   // Api call function
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,7 +48,15 @@ const RegisterForm = ({ previousStep }: propType) => {
         email,
         password,
       });
-      console.log(result.data);
+      
+      setName("");
+      setEmail("");
+      setPassword("");
+      setErrors({});
+    
+      notify("Register successfully")
+      
+      router.push("/login")
       setLoading(false);
     } catch (error: any) {
       console.log(error);
@@ -179,14 +194,14 @@ const RegisterForm = ({ previousStep }: propType) => {
           <span className="flex-1 h-px bg-gray-200" />
         </div>
 
-        <button className="flex items-center w-full justify-center gap-3 border border-gry-300 hover:border-gray-50 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200 cursor-pointer">
+        <div className='flex items-center w-full justify-center gap-3 border border-gry-300 hover:border-gray-50 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200 cursor-pointer' onClick={()=>signIn("google",{callbackUrl:"/"})}>
           <Image src={googleImg} width={20} height={20} alt="google" />
           Continue with Google
-        </button>
+        </div>
       </motion.form>
       <p className="flex items-center gap-1 text-gray-600 mt-6 text-sm ">
         Already have an account ? <LogIn className="w-4 h-4" />{" "}
-        <span className="text-green-600 cursor-pointer">Sign in</span>
+        <span className="text-green-600 cursor-pointer" onClick={()=>router.push("/login")}>Sign in</span>
       </p>
     </div>
   );

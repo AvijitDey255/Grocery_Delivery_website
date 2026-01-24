@@ -17,11 +17,10 @@ import { motion } from "motion/react";
 import Image from "next/image";
 import googleImg from "@/assets/google.png";
 import axios from "axios";
-type propType = {
-  previousStep: (n: number) => void;
-};
-const LoginPage = ({ previousStep }: propType) => {
-  const [name, setName] = useState("");
+import { useRouter } from "next/navigation";
+import { signIn, useSession } from "next-auth/react";
+import toast from "react-hot-toast";
+const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
@@ -30,20 +29,24 @@ const LoginPage = ({ previousStep }: propType) => {
     email?: string;
     password?: string;
   }>({});
-
+  const router = useRouter();
+  const session = useSession();
+  const notify = (e:any)=> toast(e);
+  console.log(session);
   // Api call function
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setErrors({});
     try {
-      const result = await axios.post("/api/auth/register", {
-        name,
+      await signIn("credentials", {
         email,
         password,
       });
-      console.log(result.data);
-      setLoading(false);
+      // notify("Login successfully")
+      
+      router.push("/")
+      // setLoading(false);
     } catch (error: any) {
       console.log(error);
       setLoading(false);
@@ -55,13 +58,6 @@ const LoginPage = ({ previousStep }: propType) => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6 py-10 bg-white relative">
-      <div
-        onClick={() => previousStep(1)}
-        className="flex absolute top-6 left-6 items-center gap-2 text-green-700 hover:text-green-800 transition-colors cursor-pointer"
-      >
-        <ArrowLeft className="w-5 h-5" />
-        <span className="font-medium">Back</span>
-      </div>
       <motion.h1
         initial={{
           y: -10,
@@ -76,7 +72,7 @@ const LoginPage = ({ previousStep }: propType) => {
         }}
         className="text-4xl font-extrabold text-green-700 mb-2"
       >
-        Create Account
+        Welcome Back
       </motion.h1>
       <motion.p
         initial={{
@@ -92,10 +88,10 @@ const LoginPage = ({ previousStep }: propType) => {
         }}
         className="flex gap-2 items-center text-gray-600 mb-8"
       >
-        Join Snapcart Today <Leaf className="w-5 h-5 text-green-800" />
+        Login To Snapcart <Leaf className="w-5 h-5 text-green-800" />
       </motion.p>
       <motion.form
-        onSubmit={handleRegister}
+        onSubmit={handleLogin}
         initial={{
           opacity: 0,
         }}
@@ -107,16 +103,6 @@ const LoginPage = ({ previousStep }: propType) => {
         }}
         className="flex flex-col gap-5 w-full max-w-sm"
       >
-        <div className="relative">
-          <User className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
-          <input
-            onChange={(e) => setName(e.target.value)}
-            value={name}
-            type="text"
-            placeholder="Your name"
-            className="w-full border border-gray-300 rounded-xl py-3 pl-10 pr-4 text-gray-800 focus:ring-2 focus:ring-green-500 focus:outline-none"
-          />
-        </div>
         <div className="relative">
           <Mail className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
           <input
@@ -153,7 +139,7 @@ const LoginPage = ({ previousStep }: propType) => {
         </div>
 
         {(() => {
-          const formValidation = name !== "" && email !== "" && password !== "";
+          const formValidation = email !== "" && password !== "";
           return (
             <button
               disabled={!formValidation || loading}
@@ -165,11 +151,7 @@ const LoginPage = ({ previousStep }: propType) => {
           }
           `}
             >
-              {loading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                "Register"
-              )}
+              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Login"}
             </button>
           );
         })()}
@@ -180,14 +162,19 @@ const LoginPage = ({ previousStep }: propType) => {
           <span className="flex-1 h-px bg-gray-200" />
         </div>
 
-        <button className="flex items-center w-full justify-center gap-3 border border-gry-300 hover:border-gray-50 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200 cursor-pointer">
+        <div className="flex items-center w-full justify-center gap-3 border border-gry-300 hover:border-gray-50 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200 cursor-pointer" onClick={()=>signIn("google",{callbackUrl:"/"})}>
           <Image src={googleImg} width={20} height={20} alt="google" />
-          Continue with Google
-        </button>
+          Login with Google
+        </div>
       </motion.form>
       <p className="flex items-center gap-1 text-gray-600 mt-6 text-sm ">
-        Already have an account ? <LogIn className="w-4 h-4" />{" "}
-        <span className="text-green-600 cursor-pointer">Sign in</span>
+        Want to create an account ? <LogIn className="w-4 h-4" />{" "}
+        <span
+          className="text-green-600 cursor-pointer"
+          onClick={() => router.push("/register")}
+        >
+          Sign Up
+        </span>
       </p>
     </div>
   );
