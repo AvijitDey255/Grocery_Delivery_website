@@ -31,7 +31,7 @@ const LoginPage = () => {
   }>({});
   const router = useRouter();
   const session = useSession();
-  const notify = (e:any)=> toast(e);
+  const notify = (e: any) => toast(e);
   console.log(session);
   // Api call function
   const handleLogin = async (e: React.FormEvent) => {
@@ -42,10 +42,14 @@ const LoginPage = () => {
       await signIn("credentials", {
         email,
         password,
+        callbackUrl: "/",
       });
-      // notify("Login successfully")
+      setLoading(false);
       
-      router.push("/")
+
+      toast.success("Login successful");
+
+      router.push("/");
       // setLoading(false);
     } catch (error: any) {
       console.log(error);
@@ -162,7 +166,10 @@ const LoginPage = () => {
           <span className="flex-1 h-px bg-gray-200" />
         </div>
 
-        <div className="flex items-center w-full justify-center gap-3 border border-gry-300 hover:border-gray-50 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200 cursor-pointer" onClick={()=>signIn("google",{callbackUrl:"/"})}>
+        <div
+          className="flex items-center w-full justify-center gap-3 border border-gry-300 hover:border-gray-50 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200 cursor-pointer"
+          onClick={() => signIn("google", { callbackUrl: "/" })}
+        >
           <Image src={googleImg} width={20} height={20} alt="google" />
           Login with Google
         </div>

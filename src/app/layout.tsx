@@ -13,11 +13,11 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode; 
 }>) {
   return (
     <html lang="en">
-      <body className="w-full min-h-screen bg-linear-to-b from-green-200 to-white">
+      <body suppressHydrationWarning className="w-full min-h-screen bg-linear-to-b from-green-200 to-white">
         <Provider>
           {children}
           <Toaster />
