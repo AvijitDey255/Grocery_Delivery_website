@@ -13,7 +13,11 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   productionBrowserSourceMaps: false,
-
+  images:{
+    remotePatterns:[
+      {hostname:"lh3.googleusercontent.com"}
+    ]
+  },
   // Disable source maps
   webpack(config) {
     config.devtool = false;
