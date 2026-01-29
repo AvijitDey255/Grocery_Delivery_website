@@ -19,9 +19,10 @@ export default async function Home() {
   if(InComplete){
     return <EditRoleMobile/>
   }
+  const plainUser = JSON.parse(JSON.stringify(user))
   return (
     <>
-      <NavBar user={user}/>
+      <NavBar user={plainUser}/>
     </>
   );
 }

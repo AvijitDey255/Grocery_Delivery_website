@@ -1,8 +1,11 @@
+"use client";
 import { Search, ShoppingCart, User } from "lucide-react";
 import mongoose from "mongoose";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
+import { AnimatePresence, scale } from "motion/react";
+import { motion } from "motion/react";
 interface IUser {
   _id?: mongoose.Types.ObjectId;
   name: string;
@@ -13,6 +16,7 @@ interface IUser {
   image?: string;
 }
 const NavBar = ({ user }: { user: IUser }) => {
+  const [open, setOpen] = useState(false);
   return (
     <div className="w-[95%] fixed top-4 left-1/2 -translate-x-1/2 bg-linear-to-r from-green-500 to-green-700 h-16 rounded-2xl shadow-lg shadow-black/30 flex justify-between items-center px-4 md:px-8 z-50">
       <Link
@@ -39,17 +43,63 @@ const NavBar = ({ user }: { user: IUser }) => {
             0
           </span>
         </Link>
-        <div className="bg-white rounded-full w-11 h-11 flex items-center justify-center overflow-hidden shadow-md hover:scale-105 transition-transform relative">
-          {user.image ? (
-            <Image
-              src={user.image}
-              alt="user"
-              fill
-              className="object-cover rounded-full"
-            />
-          ) : (
-            <User />
-          )}
+        <div className="relative">
+          <div
+            onClick={() => setOpen((prev) => !prev)}
+            className="bg-white cursor-pointer rounded-full w-11 h-11 flex items-center justify-center overflow-hidden shadow-md hover:scale-105 transition-transform "
+          >
+            {user.image ? (
+              <Image
+                src={user.image}
+                alt="user"
+                fill
+                className="object-cover rounded-full"
+              />
+            ) : (
+              <User />
+            )}
+          </div>
+          {/* drop down */}
+          <AnimatePresence>
+            {open && (
+              <motion.div
+                initial={{
+                  y: -10,
+                  opacity: 0,
+                  scale: 0.95,
+                }}
+                animate={{
+                  y: 0,
+                  opacity: 1,
+                  scale: 1,
+                }}
+                transition={{
+                  duration: 0.6,
+                }}
+                exit={{
+                  y: -10,
+                  opacity: 0,
+                  scale: 0.95,
+                }}
+                className="absolute right-0 mt-3 w-56 bg-white rounded-2xl shadow-xl border border-gray-200 p-3 z-999"
+              >
+                <div>
+                  <div>
+                    {user.image ? (
+                      <Image
+                        src={user.image}
+                        alt="user"
+                        fill
+                        className="object-cover rounded-full"
+                      />
+                    ) : (
+                      <User />
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </div>
